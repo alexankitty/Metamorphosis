@@ -264,7 +264,7 @@ class Editor(object):
                 self.parameters = parameters
                 self.options = options
 
-        def resize_meth(self, image, method = Image.ANTIALIAS):
+        def resize_meth(self, image, method = Image.LANCZOS):
                 """ Resizes PIL image to a maximum size specified maintaining the aspect ratio.
                     Allows usage of different resizing methods and does not modify the image in place,
                     then creates an exact square image.
@@ -297,7 +297,7 @@ class Editor(object):
                 scale_x = w_fin / w_ini
                 scale_y = h_fin / h_ini
 
-                image_list = [self.resize_meth(image_list[i], method = Image.ANTIALIAS) for i in range(self.parameters['count'])]
+                image_list = [self.resize_meth(image_list[i], method = Image.LANCZOS) for i in range(self.parameters['count'])]
 
                 ## Scale hotspots.
                 self.parameters['hotx'] = int(0.5 * ceil(2.0 * (self.parameters['hotx'] * scale_x)))
@@ -740,11 +740,15 @@ class X11Cur(object):
         def path_output(self):
                 """ Defines output file path. """
                 try:
-                        custom_output = os.path.join(process.outputcurs_dir, self.parameters['custom'])
+                        if self.parameters['custom']:
+                                custom_output = os.path.join(process.outputcurs_dir, (str(self.parameters['index']) + self.parameters['custom'])    )    
+                        else:
+                                custom_output = os.path.join(process.outputcurs_dir)
                         os.makedirs(custom_output, exist_ok = True)
                         return custom_output
                 except:
                         return process.outputcurs_dir
+                
 
         def theme_file(self, theme_name, description):
                 """ Creates "index.theme" file. """
@@ -778,7 +782,6 @@ class X11Cur(object):
                 proc = Popen('xcursorgen' + path_cfg + path_outcurs, shell = True, stdout = PIPE, stderr = PIPE)
                 out, err = proc.communicate()
                 code = proc.wait()
-
                 if code != 0:
                         err = ''.join(out.decode('ascii').splitlines())
                         if err == '':
@@ -1272,7 +1275,7 @@ Animation type: {}\n\tSequence chunk: {}\n\tRate chunk: {}\n\t'
                 ord_val = order.values()
                 if len(ord_val) > 1:
                         for num in ord_val:
-                                self.parameters['custom'] = "{:d}_{:d}".format(self.parameters['index'], num)
+                                self.parameters['custom'] = "_{:d}".format(num)
                                 self.logger.info('\nMulti-size / Multi-depth set: {}:'.format(self.parameters['custom']))
                                 gen_instance = process.generate(self.parameters, theme_name)
                 else:
@@ -1592,7 +1595,6 @@ class Process(object):
                         name_cfg = "img{:d}-{:d}{}.cfg".format(parameters['index'], parameters['status'], custom)
                 except:
                         name_cfg = "img{:d}-{:d}.cfg".format(parameters['index'], parameters['status'])
-
                 return os.path.join(process.cfg_dir, name_cfg)
 
         def work_setup(self, file):
@@ -1769,13 +1771,13 @@ class Process(object):
                                                                                         add = 'folder')
                                                                         continue
                                                         else:
-                                                                if numsep == 0:
+                                                                if numsep == 1:
                                                                         self.is_folder_anicur, self.is_folder_x11 = ('?', '?')
                                                                         self.abort_proc(self.folder_name,
                                                                                         'insert `.ani`, `.cur` or `X11` cursor(s) in a folder',
                                                                                         add = 'folder')
                                                                         continue
-                                                                elif numsep == 1:
+                                                                elif numsep == 0:
                                                                         is_continue = self.work_anix11_setup(pathfile, is_unpaired = False)
                                                                         if is_continue:
                                                                                 continue
