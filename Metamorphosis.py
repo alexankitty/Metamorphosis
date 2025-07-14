@@ -243,6 +243,8 @@ def metamorphosis_parser():
         morph_optional.add_argument('-t', '--platform', action = 'store', default = 'Linux', choices = ['Linux', 'Windows'], type = str,
                                     dest = "platform",
                                     help = "Select destination OS for converted cursors. Default is `Linux` platform.")
+        morph_optional.add_argument('-d', '--duplicates', action='store_true', default=False,
+                                    dest = "allow_duplicates")
 
         try:
                 options.update(vars(morph_parser.parse_args()))
@@ -775,7 +777,7 @@ class X11Cur(object):
                 if self.parameters['status'] == 2:
                         outfilename += '_pressed'
                         links = []
-
+                print(links)
                 ## Try `xcursorgen` job.
                 path_cfg = ' "' + process.config(self.parameters) + '"'
                 path_outcurs = ' "' + os.path.join(self.path_output(), outfilename) + '"'
@@ -1702,7 +1704,7 @@ class Process(object):
 
                                 ## Check duplicate files.
                                 filehash = md5(open(file_dir, 'rb').read()).hexdigest()
-                                if filehash not in unique:
+                                if filehash not in unique or self.options['allow_duplicates']:
                                         unique.append(filehash)
                                 else:
                                         self.abort_proc(file_dir, 'duplicate file found')
@@ -1747,7 +1749,7 @@ class Process(object):
 
                                                         ## Check duplicate files.
                                                         filehash = md5(open(pathfile, 'rb').read()).hexdigest()
-                                                        if filehash not in unique:
+                                                        if filehash not in unique or self.options['allow_duplicates']:
                                                                 unique.append(filehash)
                                                         else:
                                                                 msg = 'duplicate file found'
