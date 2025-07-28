@@ -143,7 +143,7 @@ cursor_namemap = {
                                                                                             'not-allowed','crossed_circle',
                                                                                             'forbidden','pirate')),
                   # Cursor resize two arrows pointing to N and S.
-                  8  : (('SizeNS'),       ('SizeNS'),     ('08north_resize'),              ('col-resize','sb_v_double_arrow',
+                  8  : (('SizeNS'),       ('SizeNS'),     ('08north_resize'),              ('sb_v_double_arrow',
                                                                                             'split_v','14fef782d02440884392942c11205230',
                                                                                             'n-resize','top_side','ns-resize','v_double_arrow',
                                                                                             'size_ver','00008160000006810000408080010102',
@@ -160,7 +160,7 @@ cursor_namemap = {
                                                                                             'left','sb_left_arrow','left-tee','left_tee',
                                                                                             'row-resize','sb_h_double_arrow','split_h',
                                                                                             '2870a09082c103050810ffdffffe0204',
-                                                                                            'w-resize','left_side')),
+                                                                                            'w-resize','left_side', 'col-resize')),
                   # Cursor resize one arrow pointing to W.
                   11 : (('SizeE'),        ('SizeE'),      ('11east_resize'),               ('e-resize','right_side','right','sb_right_arrow',
                                                                                             'right-tee','right_tee')),
